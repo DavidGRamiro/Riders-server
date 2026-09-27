@@ -16,5 +16,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/login', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # Rutas enlazadas a las apps
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
 ]

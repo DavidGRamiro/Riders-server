@@ -1,6 +1,5 @@
 from typing import Any
 
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
