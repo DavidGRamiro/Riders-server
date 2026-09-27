@@ -9,4 +9,4 @@ from motorcycles.serializer import MotorcycleSerializer
 class MotorcycleViewSet(viewsets.ModelViewSet):
     queryset = Motorcycle.objects.all()
     serializer_class = MotorcycleSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]

@@ -7,10 +7,11 @@
     <list default="true" id="da8afc36-283f-4e82-aac2-3eca0a1ae888" name="Changes" comment="feat: new app motorcycles and relation between">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/motorcycles/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/motorcycles/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/migrations/0002_user_id_fk_bike.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/migrations/0003_alter_user_id_fk_bike.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/users/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/motorcycles/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/motorcycles/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/riders/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/riders/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uv.lock" beforeDir="false" afterPath="$PROJECT_DIR$/uv.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +109,7 @@
       <updated>1790415519241</updated>
       <workItem from="1790415520239" duration="9390000" />
       <workItem from="1790444702989" duration="6442000" />
-      <workItem from="1790519949897" duration="3249000" />
+      <workItem from="1790519949897" duration="6488000" />
     </task>
     <task id="LOCAL-00001" summary="feat: innitial commit">
       <option name="closed" value="true" />
@@ -158,7 +159,31 @@
       <option name="project" value="LOCAL" />
       <updated>1790525002153</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="feat: new app motorcycles and relation between">
+      <option name="closed" value="true" />
+      <created>1790525548339</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1790525548339</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: new app motorcycles and relation between">
+      <option name="closed" value="true" />
+      <created>1790525562120</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1790525562120</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: new app motorcycles and relation between">
+      <option name="closed" value="true" />
+      <created>1790525569316</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1790525569316</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,5 +197,21 @@
     <MESSAGE value="feat: first actions, tokens and add,retrive, list and delete users" />
     <MESSAGE value="feat: new app motorcycles and relation between" />
     <option name="LAST_COMMIT_MESSAGE" value="feat: new app motorcycles and relation between" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/users/views.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/users/views.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

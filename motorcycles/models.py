@@ -13,6 +13,7 @@ class Motorcycle(models.Model):
     year = models.IntegerField(null=False, blank=False, db_comment="Año de moto")
     kilometers = models.IntegerField(null=False, blank=False, db_comment="Kilometrage")
     color = models.CharField(max_length=20, db_comment="Color")
+    alternative_text = models.TextField(db_comment="Texto alternativo", null=True, blank=True)
 
     class Meta:
         db_table = "motorcycle"
