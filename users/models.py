@@ -6,7 +6,6 @@ from users.enums.user import CarnetChoices
 
 # Create your models here.
 class User(AbstractUser):
-
     direccion = models.CharField(blank=True, null=True, max_length=255)
     telf = models.IntegerField(blank=True, null=True)
     carnet = models.CharField(choices=CarnetChoices, blank=True, null=True, max_length=2)

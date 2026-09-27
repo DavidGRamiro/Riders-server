@@ -14,6 +14,11 @@ class Motorcycle(models.Model):
     kilometers = models.IntegerField(null=False, blank=False, db_comment="Kilometrage")
     color = models.CharField(max_length=20, db_comment="Color")
 
+    class Meta:
+        db_table = "motorcycle"
+        verbose_name = "Motorcycle"
+        verbose_name_plural = "Motorcycles"
+
     def __str__(self):
         return f"{self.brand} - {self.type} - {self.engine_cc}"
 
