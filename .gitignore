@@ -1,1 +1,82 @@
-.idea
+# ==========================================
+# Archivos de Entorno y Variables Sensibles
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ==========================================
+# Base de Datos Local y Archivos Multimedia
+# ==========================================
+db.sqlite3
+db.sqlite3-journal
+/media/
+/static_root/
+
+# ==========================================
+# Python y Django
+# ==========================================
+*.py[cod]
+*$py.class
+__pycache__/
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+local_settings.py
+
+# ==========================================
+# Entornos Virtuales
+# ==========================================
+venv/
+.venv/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# ==========================================
+# PyCharm (JetBrains IDE)
+# ==========================================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# ==========================================
+# macOS System Files
+# ==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.AppleDB
+.AppleDesktop
+
+# ==========================================
+# Logs y Temporales
+# ==========================================
+*.log
+*.pot
+*.mo
