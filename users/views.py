@@ -2,6 +2,7 @@ from typing import Any
 
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -11,10 +12,10 @@ from users.models import User
 from users.serializer import UserSerializer
 
 
-# Create your views here.
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
 
     def get_serializer_class(self):
