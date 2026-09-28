@@ -49,7 +49,8 @@ THIRD_PARTY_APPS = [
 
 APP_APPS = [
     'users',
-    'motorcycles'
+    'motorcycles',
+    'routes'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + APP_APPS
