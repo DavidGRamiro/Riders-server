@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from motorcycles.serializer import MotorcycleSerializer
+from routes.serializer import RouteSerializer
 from users.models import User
 from users.serializer import UserSerializer
 
@@ -21,6 +22,8 @@ class UserViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'get_user_motorbikes':
             return MotorcycleSerializer
+        if self.action == 'get_user_routes':
+            return RouteSerializer
         return super().get_serializer_class()
 
     def retrieve(self, request,*args, **kwargs):
@@ -53,3 +56,24 @@ class UserViewSet(ModelViewSet):
              )
          else:
              return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @action(
+        methods=['get'],
+        detail=True,
+        url_path='routes'
+    )
+    def get_user_routes(self, request,*args: Any, **kwargs: Any) -> Response:
+        user = self.get_object()
+        routes = user.user_route.all()
+
+        if routes:
+            serializer = self.get_serializer_class()
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                data={ "msg": "El usuario no ha compartido rutas" },
+                status=status.HTTP_404_NOT_FOUND
+            )
