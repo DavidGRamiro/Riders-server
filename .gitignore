@@ -80,3 +80,8 @@ Icon
 *.log
 *.pot
 *.mo
+
+# Migraciones
+motorcycles/migrations
+users/migrations
+routes/migrations
