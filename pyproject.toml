@@ -14,3 +14,17 @@ dependencies = [
     "psycopg2-binary>=2.9.13",
     "python-dotenv==1.2.4",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.1",
+]
+
+[tool.ruff]
+line-length = 100
+preview = true
+exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+select = ["E"]
+ignore = ["E501"]

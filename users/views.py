@@ -19,18 +19,18 @@ class UserViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == "create":
             return [IsAuthenticated]
         return [IsAuthenticated]
 
     def get_serializer_class(self):
-        if self.action == 'get_user_motorbikes':
+        if self.action == "get_user_motorbikes":
             return MotorcycleSerializer
-        if self.action == 'get_user_routes':
+        if self.action == "get_user_routes":
             return RouteSerializer
         return super().get_serializer_class()
 
-    def retrieve(self, request,*args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = self.get_serializer(user)
         return Response(
@@ -43,30 +43,22 @@ class UserViewSet(ModelViewSet):
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        methods=['get'],
-        detail=True,
-        url_path='motorbikes'
-    )
-    def get_user_motorbikes(self, request,*args: Any, **kwargs: Any) -> Response:
-         user = self.get_object()
-         motorcycles = user.motorcycles.all()
+    @action(methods=["get"], detail=True, url_path="motorbikes")
+    def get_user_motorbikes(self, request, *args: Any, **kwargs: Any) -> Response:
+        user = self.get_object()
+        motorcycles = user.motorcycles.all()
 
-         if motorcycles is not None:
-             serializer = self.get_serializer(motorcycles, many=True)
-             return Response(
-                 data=serializer.data,
-                 status=status.HTTP_200_OK,
-             )
-         else:
-             return Response(status=status.HTTP_404_NOT_FOUND)
+        if motorcycles is not None:
+            serializer = self.get_serializer(motorcycles, many=True)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @action(
-        methods=['get'],
-        detail=True,
-        url_path='routes'
-    )
-    def get_user_routes(self, request,*args: Any, **kwargs: Any) -> Response:
+    @action(methods=["get"], detail=True, url_path="routes")
+    def get_user_routes(self, request, *args: Any, **kwargs: Any) -> Response:
         user = self.get_object()
         routes = user.user_route.all()
 
@@ -78,6 +70,5 @@ class UserViewSet(ModelViewSet):
             )
         else:
             return Response(
-                data={ "msg": "El usuario no ha compartido rutas" },
-                status=status.HTTP_404_NOT_FOUND
+                data={"msg": "El usuario no ha compartido rutas"}, status=status.HTTP_404_NOT_FOUND
             )
