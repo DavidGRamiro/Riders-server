@@ -1,16 +1,16 @@
-from typing import Any, Sequence
-
 from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from motorcycles.serializer import MotorcycleSerializer
-from routes.serializer import RouteSerializer
 from users.models import User
-from users.serializer import UserSerializer
+from users.serializer import UserSerializer, UserLoginSerializer
+
+
+class LoginCustomView(TokenObtainPairView):
+    serializer_class = UserLoginSerializer
 
 
 class UserViewSet(ModelViewSet):
@@ -20,15 +20,8 @@ class UserViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.action == "create":
-            return [IsAuthenticated]
+            return [AllowAny]
         return [IsAuthenticated]
-
-    def get_serializer_class(self):
-        if self.action == "get_user_motorbikes":
-            return MotorcycleSerializer
-        if self.action == "get_user_routes":
-            return RouteSerializer
-        return super().get_serializer_class()
 
     def retrieve(self, request, *args, **kwargs):
         user = self.get_object()
@@ -42,33 +35,3 @@ class UserViewSet(ModelViewSet):
         user = self.get_object()
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(methods=["get"], detail=True, url_path="motorbikes")
-    def get_user_motorbikes(self, request, *args: Any, **kwargs: Any) -> Response:
-        user = self.get_object()
-        motorcycles = user.motorcycles.all()
-
-        if motorcycles is not None:
-            serializer = self.get_serializer(motorcycles, many=True)
-            return Response(
-                data=serializer.data,
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    @action(methods=["get"], detail=True, url_path="routes")
-    def get_user_routes(self, request, *args: Any, **kwargs: Any) -> Response:
-        user = self.get_object()
-        routes = user.user_route.all()
-
-        if routes:
-            serializer = self.get_serializer_class()
-            return Response(
-                data=serializer.data,
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(
-                data={"msg": "El usuario no ha compartido rutas"}, status=status.HTTP_404_NOT_FOUND
-            )
