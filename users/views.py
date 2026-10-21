@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Sequence
 
 from rest_framework import status
 from rest_framework.decorators import action
@@ -16,8 +16,12 @@ from users.serializer import UserSerializer
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
+    def get_permissions(self):
+        if self.action == 'create':
+            return [IsAuthenticated]
+        return [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action == 'get_user_motorbikes':
