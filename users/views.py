@@ -1,12 +1,16 @@
+from xml.dom import ValidationErr
+
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from users.exceptions import UserException
 from users.models import User
-from users.serializer import UserSerializer, UserLoginSerializer
+from users.serializer import UserLoginSerializer, UserSerializer
+from users.services import create_user_authenticate
 
 
 class LoginCustomView(TokenObtainPairView):
@@ -20,8 +24,15 @@ class UserViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.action == "create":
-            return [AllowAny]
+            return [AllowAny()]
         return [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        try:
+            response = create_user_authenticate(request.data)
+            return Response(response, status=status.HTTP_201_CREATED)
+        except UserException as e:
+            return Response(data=e.get_full_details(), status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         user = self.get_object()
