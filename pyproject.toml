@@ -3,14 +3,28 @@ name = "riders"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
-    "django>=6.1.1",
+    "django==6.1.2",
     "django-cors-headers>=4.9.0",
-    "django-filter>=26.1",
-    "djangorestframework>=3.18.1",
+    "django-filter==26.2",
+    "djangorestframework==3.18.3",
     "djangorestframework-simplejwt>=5.5.1",
     "djangorestframework-stubs>=3.18.1",
-    "markdown>=3.11",
-    "pillow>=12.3.0",
+    "markdown==3.11.2",
+    "pillow==13.0.0",
     "psycopg2-binary>=2.9.13",
-    "python-dotenv>=1.2.3",
+    "python-dotenv==1.2.4",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.1",
+]
+
+[tool.ruff]
+line-length = 100
+preview = true
+exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+select = ["E"]
+ignore = ["E501"]
