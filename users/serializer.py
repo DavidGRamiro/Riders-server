@@ -34,13 +34,14 @@ class UserLoginSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         user = self.user
 
-        user.id_online = True
-        user.save(update_fields=["id_online"])
+        user.is_online = True
+        user.save(update_fields=["is_online"])
 
         extra_data = {
             "username": user.get_username(),
             "email": user.email,
             "is_online": user.is_online,
+            "authenticated": user.is_authenticated,
         }
         data["extra_data"] = extra_data
         return data
