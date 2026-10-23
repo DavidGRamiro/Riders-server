@@ -1,9 +1,7 @@
-from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.exceptions import UserException
-from users.models import User
 from users.serializer import UserSerializer
 
 
@@ -17,7 +15,7 @@ def create_user_authenticate(data):
         serializer = UserSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.save()
+        user = serializer.save(date_joined=timezone.now())
         refresh = RefreshToken.for_user(user)
         return {
             "user": serializer.data,

@@ -22,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
             "direccion",
             "telf",
             "carnet",
+            "is_online",
         ]
 
     def create(self, validated_data):
@@ -33,6 +34,13 @@ class UserLoginSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         user = self.user
 
-        extra_data = {"username": user.get_username(), "email": user.email, "is_active": True}
+        user.id_online = True
+        user.save(update_fields=["id_online"])
+
+        extra_data = {
+            "username": user.get_username(),
+            "email": user.email,
+            "is_online": user.is_online,
+        }
         data["extra_data"] = extra_data
         return data

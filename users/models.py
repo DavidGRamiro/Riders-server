@@ -9,6 +9,7 @@ class User(AbstractUser):
     direccion = models.CharField(blank=True, null=True, max_length=255)
     telf = models.IntegerField(blank=True, null=True)
     carnet = models.CharField(choices=CarnetChoices, blank=True, null=True, max_length=2)
+    is_online = models.BooleanField(default=False)
     groups = models.ManyToManyField(
         Group,
         related_name="custom_user_groups",
@@ -21,8 +22,7 @@ class User(AbstractUser):
     )
 
     class Meta:
-        db_table = 'user'
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
-        ordering = ['id']
-
+        db_table = "user"
+        verbose_name = "User"
+        verbose_name_plural = "Users"
+        ordering = ["id"]
