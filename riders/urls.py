@@ -3,7 +3,7 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from motorcycles.views import MotorcycleViewSet
+from bikes.views import MotorcycleViewSet
 from routes.views import RouteViewSet
 from users.views import UserViewSet, LoginCustomView
 
