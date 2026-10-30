@@ -1,62 +1,51 @@
 import json
-from typing import Any
 
 from ollama import ChatResponse, chat
-from rest_framework.utils.serializer_helpers import ReturnDict
 
-from ai.constants import SYSTEM_PROMPT, SYSTEM_ROLE, SYSTEM_USER, USER_PROMPT
+from ai.constants import SYSTEM_PROMPT, SYSTEM_ROL, USER_ROL, USER_PROMPT
 from ai.serializer import ResponseOllamaSerializer
 
 
 def generate_response(prompt):
-    # We pull the model.  oollama run beam:cloud
     try:
+        origin_val = prompt.get("origin") or "No especificado"
+        destination_val = prompt.get("destination") or "No especificado"
+        route_type_val = prompt.get("route_type") or "No especificado"
+        add_msg_val = prompt.get("additional_message") or "Sin preferencias adicionales"
+
+        load_system_prompt = SYSTEM_PROMPT
         load_user_prompt = USER_PROMPT.format(
-            additional_message=prompt["additional_message"],
-            distance=prompt["distance_km"],
-        )
-        load_system_prompt = SYSTEM_PROMPT.format(
-            prefer_curvy_roads=prompt["prefer_curvy_roads"],
-            duration_time=prompt["duration_time"],
-            route_type=prompt["route_type"],
-            origin=prompt["origin"],
-            destination=prompt.get("destination"),
+            origin=origin_val,
+            destination=destination_val,
+            route_type=route_type_val,
+            prefer_curvy_roads="Sí" if prompt.get("prefer_curvy_roads") else "No",
+            duration_time=(
+                "Sin límite"
+                if not prompt.get("duration_time")
+                else f"{prompt['duration_time']} horas"
+            ),
+            distance=(
+                "Sin límite" if not prompt.get("distance_km") else f"{prompt['distance_km']} km"
+            ),
+            additional_message=add_msg_val,
         )
 
         response: ChatResponse = chat(
             model="beam:cloud",
             messages=[
-                {"role": SYSTEM_ROLE, "content": load_system_prompt},
-                {"role": SYSTEM_USER, "content": load_user_prompt},
+                {"role": SYSTEM_ROL, "content": load_system_prompt},
+                {"role": USER_ROL, "content": load_user_prompt},
             ],
             format="json",
             stream=False,
         )
 
-        # ollama_response_serializer = ResponseOllamaSerializer(
-        #     data={
-        #         "response": response.message.content,
-        #         "role": response.message.role,
-        #         "done": response.done,
-        #         "total_duration": response.total_duration,
-        #     }
-        # )
-        # ollama_response_serializer.is_valid(raise_exception=True)
-
         content = response.message.content
-        if content is None:
-            raise ValueError("Ollama no ha devuelto contenido.")
+        assert content is not None, "El contenido de la respuesta no puede ser None"
 
-        content = content.strip()
-
-        if content.startswith("```json"):
-            content = content[len("```json") :]
-
-        if content.endswith("```"):
-            content = content[:-3]
-
-        main_content = json.loads(content.strip())
-
-        return main_content
+        data_dict = json.loads(content)
+        serializer = ResponseOllamaSerializer(data=data_dict)
+        serializer.is_valid(raise_exception=True)
+        return serializer.validated_data
     except Exception as e:
         print(e)
