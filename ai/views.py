@@ -13,10 +13,10 @@ class OllamaAIViewSet(ViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = OllamaApiSerializer
 
-    @action(methods=["POST"], url_path="generate", url_name="generate")
+    @action(methods=["POST"], url_path="generate", url_name="generate", detail=False)
     def generate_route(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         ollama_response = generate_response(serializer.validated_data)
-        return Response(data=ollama_response.message.content, status=status.HTTP_200_OK)
+        return Response(data=ollama_response, status=status.HTTP_200_OK)
