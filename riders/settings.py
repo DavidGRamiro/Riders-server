@@ -50,7 +50,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = ["markdown"]
 
-APP_APPS = ["users", "bikes", "routes"]
+APP_APPS = ["users", "bikes", "routes", "ai"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + APP_APPS
 
