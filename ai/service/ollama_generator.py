@@ -1,8 +1,9 @@
 import json
 
+from geopy import Nominatim
 from ollama import ChatResponse, chat
 
-from ai.constants import SYSTEM_PROMPT, SYSTEM_ROL, USER_ROL, USER_PROMPT
+from ai.constants import SYSTEM_PROMPT, SYSTEM_ROL, USER_PROMPT, USER_ROL
 from ai.serializer import ResponseOllamaSerializer
 
 
@@ -13,7 +14,6 @@ def generate_response(prompt):
         route_type_val = prompt.get("route_type") or "No especificado"
         add_msg_val = prompt.get("additional_message") or "Sin preferencias adicionales"
 
-        load_system_prompt = SYSTEM_PROMPT
         load_user_prompt = USER_PROMPT.format(
             origin=origin_val,
             destination=destination_val,
@@ -33,7 +33,7 @@ def generate_response(prompt):
         response: ChatResponse = chat(
             model="beam:cloud",
             messages=[
-                {"role": SYSTEM_ROL, "content": load_system_prompt},
+                {"role": SYSTEM_ROL, "content": SYSTEM_PROMPT},
                 {"role": USER_ROL, "content": load_user_prompt},
             ],
             format="json",
@@ -46,6 +46,24 @@ def generate_response(prompt):
         data_dict = json.loads(content)
         serializer = ResponseOllamaSerializer(data=data_dict)
         serializer.is_valid(raise_exception=True)
-        return serializer.validated_data
+
+        return create_waypoints(serializer.validated_data.get("way_points"))
     except Exception as e:
         print(e)
+
+
+def create_waypoints(waypoints):
+    geolocator = Nominatim(user_agent="riders")
+    geopy_response = []
+
+    try:
+        for position in waypoints:
+            location = geolocator.geocode(position, language="es")
+            if location:
+                geopy_response.append({"position": location.raw})
+            else:
+                geopy_response.append({"position": location.raw, "msg": "Position not found"})
+    except Exception as e:
+        print(e)
+        geopy_response.append({"err": "Problem getting geocode positions"})
+    return geopy_response
