@@ -5,7 +5,7 @@ from routes.enums.route_type import RouteTypes
 
 class OllamaApiSerializer(serializers.Serializer):
     additional_message = serializers.CharField(
-        max_length=200, required=False, help_text="Additional data that the user want"
+        max_length=500, required=False, help_text="Additional data that the user want"
     )
     route_type = serializers.ChoiceField(choices=RouteTypes, default=RouteTypes.RELAXED)
     distance_km = serializers.IntegerField(
@@ -35,3 +35,4 @@ class ResponseOllamaSerializer(serializers.Serializer):
     route_type = serializers.CharField()
     prefer_curvy_roads = serializers.BooleanField()
     distance_estimated_km = serializers.IntegerField()
+    coords = serializers.ListField()
