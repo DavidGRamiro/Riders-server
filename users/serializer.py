@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from users.models import User
 
@@ -27,21 +26,3 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
-
-
-class UserLoginSerializer(TokenObtainPairSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-        user = self.user
-
-        user.is_online = True
-        user.save(update_fields=["is_online"])
-
-        extra_data = {
-            "username": user.get_username(),
-            "email": user.email,
-            "is_online": user.is_online,
-            "authenticated": user.is_authenticated,
-        }
-        data["extra_data"] = extra_data
-        return data

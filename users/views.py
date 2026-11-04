@@ -6,16 +6,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_simplejwt.views import TokenObtainPairView
-
 from users.exceptions import UserException
 from users.models import User
-from users.serializer import UserLoginSerializer, UserSerializer
+from users.serializer import UserSerializer
 from users.services import create_user_authenticate
-
-
-class LoginCustomView(TokenObtainPairView):
-    serializer_class = UserLoginSerializer
 
 
 class UserViewSet(ModelViewSet):

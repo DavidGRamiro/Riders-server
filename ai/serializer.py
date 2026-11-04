@@ -24,7 +24,7 @@ class OllamaApiSerializer(serializers.Serializer):
     origin = serializers.CharField(
         default="Madrid", max_length=100, help_text="Origin of the route"
     )
-    destination = serializers.CharField(required=False)
+    destination = serializers.CharField(required=False, allow_null=True)
 
 
 class ResponseOllamaSerializer(serializers.Serializer):

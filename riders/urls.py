@@ -4,9 +4,10 @@ from django.urls import path, include
 from rest_framework import routers
 
 from ai.views import OllamaAIViewSet
+from auth.views import LoginCustomView, RefreshUserTokenView
 from bikes.views import MotorcycleViewSet
 from routes.views import RouteViewSet
-from users.views import UserViewSet, LoginCustomView
+from users.views import UserViewSet
 
 router = routers.DefaultRouter()
 
@@ -19,6 +20,7 @@ urlpatterns = [
     # Rutas fijas.º
     path("admin/", admin.site.urls),
     path("api/login", LoginCustomView.as_view(), name="login"),
+    path("api/refresh", RefreshUserTokenView.as_view(), name="refresh"),
     # Rutas enlazadas a las apps
     path("api/", include(router.urls)),
 ]
