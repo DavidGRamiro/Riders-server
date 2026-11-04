@@ -42,6 +42,6 @@ class RefreshUserTokenSerializer(TokenRefreshSerializer):
             "username": user.get_username(),
             "email": user.email,
             "is_online": user.is_online,
-            "is_authenticated": user.is_authenticated,
+            "authenticated": user.is_authenticated,
         }
         return data
