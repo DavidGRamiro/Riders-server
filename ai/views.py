@@ -15,8 +15,9 @@ class OllamaAIViewSet(ViewSet):
 
     @action(methods=["POST"], url_path="generate", url_name="generate", detail=False)
     def generate_route(self, request, *args, **kwargs):
+        user = self.request.user
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        response = generate_response(serializer.validated_data)
+        response = generate_response(serializer.validated_data, user)
         return Response(data=response, status=status.HTTP_200_OK)
