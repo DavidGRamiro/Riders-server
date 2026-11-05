@@ -5,13 +5,15 @@ from ollama import ChatResponse, chat
 
 from ai.constants import SYSTEM_PROMPT, SYSTEM_ROL, USER_PROMPT, USER_ROL
 from ai.serializer import ResponseOllamaSerializer
+from users.models import UserGeneratedRoute
 
 
-def generate_response(prompt):
+def generate_response(prompt, user):
     """
     Generate response from user request, using Ollama free cloud model.
     After Ollama give us a list of possible waypoints, we call to geopy, and
     they give us complete information about the way points and we return them.
+    :param user:
     :param prompt: dict
     :return: ResponseOllamaSerializer serializer object
     """
@@ -51,6 +53,7 @@ def generate_response(prompt):
 
         serializer = ResponseOllamaSerializer(data=data_dict)
         serializer.is_valid(raise_exception=True)
+        assign_to_user(serializer.validated_data, user)
         return serializer.validated_data
     except Exception as e:
         print(e)
@@ -82,3 +85,17 @@ def create_waypoints(waypoints):
     except Exception as ex:
         geopy_response.append({"detail": "Problem getting geocode positions", "err": str(ex)})
     return geopy_response
+
+
+def assign_to_user(ollama_response, user):
+    try:
+        UserGeneratedRoute.objects.create(
+            id_fk_user=user,
+            coords=ollama_response["coords"],
+            waypoint=ollama_response["way_points"],
+            distance_km=ollama_response["distance_estimated_km"],
+            route_type=ollama_response["route_type"],
+        )
+        print("SAVED")
+    except Exception as exc:
+        print(exc)
