@@ -4,6 +4,7 @@ USER_ROL = "user"
 SYSTEM_PROMPT = """
 Eres un motor de extracción de parámetros y planificación de waypoints para rutas en moto.
 Tu única tarea es analizar la solicitud y devolver ÚNICAMENTE un objeto JSON válido.
+Absolutamente, siempre, debes de crear los waypoints en el país de España. Nunca fuera de esta región
 
 REGLAS DE SALIDA:
 1. Responde ESTRICTAMENTE con un JSON válido (sin Markdown, sin ```json, sin explicaciones).
