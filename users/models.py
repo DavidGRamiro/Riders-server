@@ -38,8 +38,8 @@ class User(AbstractUser):
 class UserGeneratedRoute(models.Model):
     id_fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateField(auto_now_add=True)
-    coords = models.TextField()
-    waypoint = models.TextField()
+    coords = models.JSONField()
+    waypoint = models.JSONField()
     distance_km = models.FloatField()
     route_type = models.CharField()
     saved = models.BooleanField(default=False)
