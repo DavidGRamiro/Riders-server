@@ -1,0 +1,18 @@
+services:
+  valhalla:
+    image: ghcr.io/valhalla/valhalla-scripted:latest
+    container_name: valhalla
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./valhalla/custom_files:/custom_files
+    environment:
+      - tile_urls=https://download.geofabrik.de/europe/spain-latest.osm.pbf
+      - server_threads=2
+      - build_elevation=False
+      - build_admins=True
+      - build_time_zones=True
+      - build_transit=False
+      - serve_tiles=True
+      - use_tiles_ignore_pbf=False
+    restart: unless-stopped
