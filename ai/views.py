@@ -7,7 +7,7 @@ from rest_framework.viewsets import ViewSet
 from ai.serializer import OllamaApiSerializer, ResponseOllamaSerializer
 from ai.service.geopy_generator import create_coordinates
 from ai.service.ollama_generator import generate_route
-from ai.service.route_engine import create_and_save_route
+from ai.service.valhalla import create_and_save_route
 
 
 class OllamaAIViewSet(ViewSet):

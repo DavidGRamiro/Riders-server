@@ -7,9 +7,7 @@ from ai.constants import SYSTEM_PROMPT, SYSTEM_ROL, USER_PROMPT, USER_ROL
 from ai.exceptions import (
     OllamaResponseException,
     OllamaServiceException,
-    RoutePersistenceException,
 )
-from users.models import User, UserGeneratedRoute
 
 logger = logging.getLogger(__name__)
 
