@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from ai.serializer import OllamaApiSerializer, ResponseOllamaSerializer
-from ai.service.ollama_generator import generate_and_save_route
+from ai.service.geopy_generator import create_coordinates
+from ai.service.ollama_generator import generate_route
+from ai.service.valhalla import create_and_save_route
 
 
 class OllamaAIViewSet(ViewSet):
@@ -17,7 +19,9 @@ class OllamaAIViewSet(ViewSet):
         request_serializer = self.serializer_class(data=request.data)
         request_serializer.is_valid(raise_exception=True)
 
-        route_data = generate_and_save_route(request_serializer.validated_data, request.user)
+        ollama = generate_route(request_serializer.validated_data)
+        coordinates = create_coordinates(ollama["way_points"])
+        response = create_and_save_route(coordinates, request.user)
 
-        response_serializer = ResponseOllamaSerializer(instance=route_data)
-        return Response(data=response_serializer.data, status=status.HTTP_200_OK)
+        # response_serializer = ResponseOllamaSerializer(instance='')
+        return Response(data="Creado", status=status.HTTP_200_OK)

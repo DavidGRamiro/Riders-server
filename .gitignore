@@ -85,3 +85,6 @@ Icon
 bikes/migrations
 users/migrations
 routes/migrations
+
+# Valhalla - OpenStreetMap data and routing tiles
+valhalla/custom_files
