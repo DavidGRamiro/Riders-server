@@ -1,6 +1,3 @@
-from typing import Any
-from xml.dom import ValidationErr
-
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -8,8 +5,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from users.exceptions import UserException
-from users.models import User, UserGeneratedRoute
-from users.serializer import UserSerializer, UserRouteGeneratedSerializer
+from users.models import User
+from users.serializer import UserSerializer
 from users.services import create_user_authenticate
 
 
@@ -22,11 +19,6 @@ class UserViewSet(ModelViewSet):
         if self.action == "create":
             return [AllowAny()]
         return [IsAuthenticated()]
-
-    def get_serializer_class(self, *args: Any, **kwargs: Any):
-        if self.action == "get_user_generated_routes":
-            return UserRouteGeneratedSerializer
-        return UserSerializer
 
     def create(self, request, *args, **kwargs):
         try:
@@ -55,15 +47,5 @@ class UserViewSet(ModelViewSet):
             user.is_online = False
             user.save(update_fields=["is_online"])
             return Response(data={"Usuario offline"}, status=status.HTTP_204_NO_CONTENT)
-        except UserException:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    @action(methods=["GET"], detail=True, url_path="generated-routes", url_name="generated-routes")
-    def get_user_generated_routes(self, request, pk=None):
-        try:
-            user = self.get_object()
-            routes = UserGeneratedRoute.objects.filter(id_fk_user=user)
-            serializer = self.get_serializer(routes, many=True)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
         except UserException:
             return Response(status=status.HTTP_404_NOT_FOUND)
