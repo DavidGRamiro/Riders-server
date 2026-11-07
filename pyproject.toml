@@ -3,18 +3,20 @@ name = "riders"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
-    "django==6.1.2",
+    "django==6.1.3",
     "django-cors-headers>=4.9.0",
     "django-filter==26.2",
     "djangorestframework==3.18.3",
     "djangorestframework-simplejwt>=5.5.1",
     "djangorestframework-stubs>=3.18.1",
     "geopy>=2.5.0",
-    "markdown==3.11.2",
+    "markdown==3.11.3",
     "ollama>=0.6.3",
     "pillow==13.0.0",
+    "polyline>=2.0.4",
     "psycopg2-binary>=2.9.13",
     "python-dotenv==1.2.4",
+    "requests>=2.34.2",
 ]
 
 [dependency-groups]

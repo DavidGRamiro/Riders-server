@@ -37,7 +37,7 @@ def generate_route(prompt: dict) -> dict:
     """
     user_prompt = create_user_prompt(prompt)
     raw_response = request_route(user_prompt)
-    route_data = parse_route_response(raw_response)
+    route_data = validate_response(raw_response)
     return route_data
 
 
@@ -104,7 +104,7 @@ def request_route(user_prompt: str) -> str:
     return content
 
 
-def parse_route_response(raw_response: str) -> dict:
+def validate_response(raw_response: str) -> dict:
     """
     Parse and validate the raw JSON returned by Ollama.
 

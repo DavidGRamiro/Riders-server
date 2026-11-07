@@ -20,34 +20,9 @@ class User(AbstractUser):
         related_name="custom_user_permissions",
         blank=True,
     )
-    user_route_generate = models.ForeignKey(
-        "UserGeneratedRoute",
-        on_delete=models.CASCADE,
-        related_name="users_ai_routes",
-        blank=True,
-        null=True,
-    )
 
     class Meta:
         db_table = "user"
         verbose_name = "User"
         verbose_name_plural = "Users"
         ordering = ["id"]
-
-
-class UserGeneratedRoute(models.Model):
-    id_fk_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateField(auto_now_add=True)
-    coords = models.JSONField()
-    waypoint = models.JSONField()
-    distance_km = models.FloatField()
-    route_type = models.CharField()
-    saved = models.BooleanField(default=False)
-
-    class Meta:
-        db_table = "user_generated_route"
-        verbose_name = "User generated route"
-        verbose_name_plural = "User generated routes"
-
-    def __str__(self):
-        return f"Ruta generada por {self.user.username}/{self.created_at}"

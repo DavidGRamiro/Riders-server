@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from users.models import User, UserGeneratedRoute
+from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -26,9 +26,3 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
-
-
-class UserRouteGeneratedSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserGeneratedRoute
-        fields = "__all__"
