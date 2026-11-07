@@ -4,6 +4,14 @@ from routes.enums.route_type import RouteTypes
 
 
 class OllamaApiSerializer(serializers.Serializer):
+
+    title = serializers.CharField(required=False)
+    way_points = serializers.ListField(required=False)
+    distance_estimated_km = serializers.IntegerField(
+        required=False,
+        allow_null=True,
+    )
+
     additional_message = serializers.CharField(
         max_length=500, required=False, help_text="Additional data that the user want"
     )
@@ -27,12 +35,17 @@ class OllamaApiSerializer(serializers.Serializer):
     destination = serializers.CharField(required=False, allow_null=True)
 
 
-class ResponseOllamaSerializer(serializers.Serializer):
-    title = serializers.CharField()
-    origin = serializers.CharField()
-    destination = serializers.CharField()
-    way_points = serializers.ListField()
-    route_type = serializers.CharField()
-    prefer_curvy_roads = serializers.BooleanField()
-    distance_estimated_km = serializers.IntegerField()
-    coords = serializers.ListField()
+class CoordinatesSerializer(serializers.Serializer):
+    lat = serializers.FloatField()
+    lon = serializers.FloatField()
+
+
+class ValhallaSerializer(serializers.Serializer):
+    distance = serializers.FloatField()
+    duration = serializers.FloatField()
+    coordinates = CoordinatesSerializer(many=True)
+
+
+class ResponseSerializer(serializers.Serializer):
+    ollama = OllamaApiSerializer()
+    route_engine = ValhallaSerializer()
