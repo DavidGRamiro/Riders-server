@@ -40,6 +40,7 @@ def call_valhalla_service(locations: list):
         "units": "kilometers",
         "language": "es-ES",
         "shape_format": "polyline6",
+        "costing_options": {"motorcycle": {"use_highways": 0.0, "use_trails": 0.9}},
     }
     response = requests.post(url_valhalla, json=payload, timeout=60)
     response.raise_for_status()
