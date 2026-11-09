@@ -3,11 +3,11 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from ai.views import OllamaAIViewSet
-from auth.views import LoginCustomView, RefreshUserTokenView
-from bikes.views import MotorcycleViewSet
-from routes.views import RouteViewSet
-from users.views import UserViewSet
+from apps.ai.views import OllamaAIViewSet
+from apps.auth.views import LoginCustomView, RefreshUserTokenView
+from apps.bikes.views import MotorcycleViewSet
+from apps.routes.views import RouteViewSet
+from apps.users.views import UserViewSet
 
 router = routers.DefaultRouter()
 
