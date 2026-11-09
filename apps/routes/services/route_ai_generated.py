@@ -41,7 +41,7 @@ def assign_route_to_user(user: User, route_generated: dict):
             id_fk_user=user,
             coords=route_engine.get("coordinates", {}),
             waypoints=ollama.get("way_points", {}),
-            distance_km=ollama.get("distance_estimated_km", 0),
+            distance_km=route_engine.get("distance", 0),
             route_type=ollama.get("route_type", None),
         )
     except Exception as exc:

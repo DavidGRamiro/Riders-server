@@ -1,9 +1,18 @@
 import json
 import logging
+import os
+import unicodedata
 
-from ollama import ChatResponse, chat
+import ollama
+from ollama import ChatResponse
 
-from apps.ai.constants import SYSTEM_PROMPT, SYSTEM_ROL, USER_PROMPT, USER_ROL
+from apps.ai.constants import (
+    ROUTE_RESPONSE_SCHEMA,
+    SYSTEM_PROMPT,
+    SYSTEM_ROL,
+    USER_PROMPT,
+    USER_ROL,
+)
 from apps.ai.exceptions import (
     OllamaResponseException,
     OllamaServiceException,
@@ -11,7 +20,8 @@ from apps.ai.exceptions import (
 
 logger = logging.getLogger(__name__)
 
-OLLAMA_MODEL = "beam:cloud"
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "")
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "")
 REQUIRED_ROUTE_FIELDS = {
     "title",
     "origin",
@@ -19,8 +29,99 @@ REQUIRED_ROUTE_FIELDS = {
     "way_points",
     "route_type",
     "prefer_curvy_roads",
-    "distance_estimated_km",
 }
+MISSING_VALUES = {"", "no especificado", "sin especificar"}
+
+
+def _value_or_default(value, default: str) -> str:
+    text = str(value or "").strip()
+    return default if text.casefold() in MISSING_VALUES else text
+
+
+def _waypoint_key(name: str) -> str:
+    return name.split(",")[0].strip().casefold()
+
+
+def _normalize_text(value: str) -> str:
+    text = unicodedata.normalize("NFKD", value or "")
+    text = "".join(char for char in text if not unicodedata.combining(char))
+    return text.casefold().strip()
+
+
+def _matches_text(name: str, text: str) -> bool:
+    normalized_name = _normalize_text(name)
+    if not normalized_name or not text:
+        return False
+    if normalized_name in text:
+        return True
+    words = [word for word in normalized_name.replace(",", " ").split() if len(word) >= 4]
+    return any(word in text for word in words)
+
+
+def filter_anchors(route_data: dict, prompt: dict) -> dict:
+    """
+    Drop waypoints that the model invented and the user did not mention.
+
+    The model is asked to return only the mandatory anchors, but small models
+    sometimes add an extra city. Only origin, destination and places explicitly
+    mentioned in the user's preferences are kept.
+    """
+    points = route_data.get("way_points") or []
+    if len(points) <= 2:
+        return route_data
+
+    additional = prompt.get("additional_data") or prompt.get("additional_message") or ""
+    text = _normalize_text(additional)
+    if not text or text in {"sin preferencias adicionales", "no especificado"}:
+        route_data["way_points"] = [points[0], points[-1]]
+        return route_data
+
+    kept = [points[0]]
+    for point in points[1:-1]:
+        if _matches_text(point, text):
+            kept.append(point)
+    kept.append(points[-1])
+    route_data["way_points"] = kept
+    return route_data
+
+
+def normalize_waypoints(route_data: dict, prompt: dict) -> dict:
+    """
+    Force the route endpoints to match the user's request.
+
+    The model can drift and change the origin/destination or forget to include
+    them as the first/last waypoint. This normalizes the result so the first
+    waypoint is always the requested origin and the last one the destination.
+
+    :param route_data: route data returned by Ollama
+    :param prompt: validated request data
+    :return: route data with normalized origin, destination and waypoints
+    """
+    origin = _value_or_default(prompt.get("origin"), "Madrid")
+    destination = _value_or_default(prompt.get("destination"), origin)
+
+    route_data["origin"] = origin
+    route_data["destination"] = destination
+
+    points = []
+    seen = set()
+    for point in route_data.get("way_points") or []:
+        name = str(point).strip()
+        key = _waypoint_key(name)
+        if not name or key in seen:
+            continue
+        seen.add(key)
+        points.append(name)
+
+    if not points or _waypoint_key(points[0]) != _waypoint_key(origin):
+        points.insert(0, origin)
+    if _waypoint_key(points[-1]) != _waypoint_key(destination):
+        points.append(destination)
+    if len(points) < 2:
+        points.append(destination)
+
+    route_data["way_points"] = points
+    return route_data
 
 
 def generate_route(prompt: dict) -> dict:
@@ -38,7 +139,8 @@ def generate_route(prompt: dict) -> dict:
     user_prompt = create_user_prompt(prompt)
     raw_response = request_route(user_prompt)
     route_data = validate_response(raw_response)
-    return route_data
+    route_data = normalize_waypoints(route_data, prompt)
+    return filter_anchors(route_data, prompt)
 
 
 def create_user_prompt(prompt: dict) -> str:
@@ -54,10 +156,17 @@ def create_user_prompt(prompt: dict) -> str:
     origin_val = prompt.get("origin") or "No especificado"
     destination_val = prompt.get("destination") or "No especificado"
     route_type_val = prompt.get("route_type") or "No especificado"
-    add_msg_val = prompt.get("additional_message") or "Sin preferencias adicionales"
+    add_msg_val = (
+        prompt.get("additional_data")
+        or prompt.get("additional_message")
+        or "Sin preferencias adicionales"
+    )
     prefer_curvy_roads = "Sí" if prompt.get("prefer_curvy_roads") else "No"
+    avoid_motorways = "Sí" if prompt.get("avoid_motorways") else "No"
     duration = (
-        "Sin límite" if not prompt.get("duration_time") else f"{prompt['duration_time']} horas"
+        "Sin límite"
+        if not prompt.get("duration_time")
+        else f"{prompt['duration_time']} minutos"
     )
     distance = "Sin límite" if not prompt.get("distance_km") else f"{prompt['distance_km']} km"
 
@@ -66,6 +175,7 @@ def create_user_prompt(prompt: dict) -> str:
         destination=destination_val,
         route_type=route_type_val,
         prefer_curvy_roads=prefer_curvy_roads,
+        avoid_motorways=avoid_motorways,
         duration_time=duration,
         distance=distance,
         additional_message=add_msg_val,
@@ -76,7 +186,7 @@ def request_route(user_prompt: str) -> str:
     """
     Send the prompt to the Ollama chat model and return its raw content.
 
-    The model is instructed to answer with JSON only, so the returned value is
+    The model is constrained to the route JSON schema, so the returned value is
     expected to be a JSON string ready to be parsed.
 
     :param user_prompt: user message built by :func:`create_user_prompt`
@@ -85,14 +195,18 @@ def request_route(user_prompt: str) -> str:
     :raises OllamaResponseException: if Ollama returns an empty response
     """
     try:
-        response: ChatResponse = chat(
+        client = ollama.Client(host=OLLAMA_HOST)
+        response: ChatResponse = client.chat(
             model=OLLAMA_MODEL,
             messages=[
                 {"role": SYSTEM_ROL, "content": SYSTEM_PROMPT},
                 {"role": USER_ROL, "content": user_prompt},
             ],
-            format="json",
+            format=ROUTE_RESPONSE_SCHEMA,
             stream=False,
+            think=True,
+            options={"num_predict": 512, "temperature": 0.1, "num_ctx": 4096},
+            keep_alive="10m",
         )
     except Exception as exc:
         logger.exception("Error requesting the route to Ollama")

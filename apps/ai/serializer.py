@@ -10,9 +10,16 @@ class OllamaApiSerializer(serializers.Serializer):
         required=False,
         allow_null=True,
     )
+    way_points_coords = serializers.ListField(required=False)
 
     additional_message = serializers.CharField(
         max_length=500, required=False, help_text="Additional data that the user want"
+    )
+    additional_data = serializers.CharField(
+        max_length=500,
+        required=False,
+        write_only=True,
+        help_text="Alias of additional_message",
     )
     route_type = serializers.ChoiceField(choices=RouteTypes, default=RouteTypes.RELAXED)
     distance_km = serializers.IntegerField(

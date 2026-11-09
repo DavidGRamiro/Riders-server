@@ -8,7 +8,7 @@ from rest_framework.viewsets import ViewSet
 
 from apps.ai.exceptions import OllamaServiceException
 from apps.ai.serializer import OllamaApiSerializer, ResponseSerializer
-from apps.ai.service.geopy_generator import create_coordinates
+from apps.ai.service.geopy_generator import create_coordinates, enrich_waypoints
 from apps.ai.service.ollama_generator import generate_route
 from apps.ai.service.valhalla_generator import engine_route
 from apps.routes.services.route_ai_generated import assign_route_to_user
@@ -27,6 +27,12 @@ class OllamaAIViewSet(ViewSet):
             geopy = create_coordinates(ollama["way_points"])
             route_engine = engine_route(geopy)
 
+            enriched = enrich_waypoints(geopy, route_engine.get("coordinates", []))
+            ollama["way_points"] = [
+                point.get("name") or (point.get("location") or "").split(",")[0].strip()
+                for point in enriched
+            ]
+            ollama["way_points_coords"] = enriched
             response = {"ollama": ollama, "route_engine": route_engine}
             assign_route_to_user(self.request.user, response)
 
