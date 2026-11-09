@@ -82,9 +82,9 @@ Icon
 *.mo
 
 # Migraciones
-bikes/migrations
-users/migrations
-routes/migrations
+apps/bikes/migrations
+apps/users/migrations
+apps/routes/migrations
 
 # Valhalla - OpenStreetMap data and routing tiles
 valhalla/custom_files

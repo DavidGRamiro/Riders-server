@@ -15,6 +15,8 @@ from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
+from apps import users
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
@@ -50,7 +52,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = ["markdown"]
 
-APP_APPS = ["users", "bikes", "routes", "ai"]
+APP_APPS = ["apps.users", "apps.bikes", "apps.routes", "apps.ai"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + APP_APPS
 
