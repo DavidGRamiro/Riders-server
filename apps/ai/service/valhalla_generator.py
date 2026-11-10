@@ -23,6 +23,8 @@ def engine_route(coords: list):
 def format_coords(coords: list):
     locations = []
     for index, coord in enumerate(coords):
+        if coord.get("msg") is not None:
+            continue
         locations.append({
             "lat": float(coord["lat"]),
             "lon": float(coord["lon"]),
@@ -33,7 +35,6 @@ def format_coords(coords: list):
 
 def call_valhalla_service(locations: list):
     url_valhalla = os.environ.get("VALHALLA_URL", "localhost")
-
     payload = {
         "locations": locations,
         "costing": "motorcycle",
@@ -42,9 +43,12 @@ def call_valhalla_service(locations: list):
         "shape_format": "polyline6",
         "costing_options": {"motorcycle": {"use_highways": 0.0, "use_trails": 0.9}},
     }
-    response = requests.post(url_valhalla, json=payload, timeout=60)
-    response.raise_for_status()
-    return response.json()
+    try:
+        response = requests.post(url_valhalla, json=payload, timeout=60)
+        response.raise_for_status()
+        return response.json()
+    except Exception as ex:
+        raise RoutePersistenceException() from ex
 
 
 def generate_obj(response):
