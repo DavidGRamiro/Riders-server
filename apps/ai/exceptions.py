@@ -17,3 +17,15 @@ class RoutePersistenceException(APIException):
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     default_detail = "No se pudo guardar la ruta generada."
     default_code = "route_persistence_error"
+
+
+class RouteEngineServerNotFoundException(APIException):
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    default_detail = "El servidor de Valhalla no esta disponible."
+    default_code = "route_engine_server_error"
+
+
+class RouteEngineServerNotFoundException(APIException):
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    default_detail = "El servidor de Valhalla no esta disponible."
+    default_code = "route_engine_server_error"
