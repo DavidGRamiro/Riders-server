@@ -34,6 +34,9 @@ class RouteGeneratedByUser(models.Model):
     distance_km = models.FloatField()
     route_type = models.CharField()
     saved = models.BooleanField(default=False)
+    title = models.CharField(max_length=255, db_comment="Title of route")
+    prompt = models.TextField(db_comment="Prompt of route")
+    route_code = models.CharField(max_length=10, db_comment="Code of route", unique=True)
 
     class Meta:
         db_table = "route_generated_user"
