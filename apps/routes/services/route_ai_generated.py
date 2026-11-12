@@ -36,6 +36,8 @@ def assign_route_to_user(user: User, route_generated: dict):
     try:
         ollama = route_generated["ollama"]
         route_engine = route_generated["route_engine"]
+        prompt = route_generated["prompt"]
+        code = generate_unique_code()
 
         RouteGeneratedByUser.objects.create(
             id_fk_user=user,
@@ -43,6 +45,28 @@ def assign_route_to_user(user: User, route_generated: dict):
             waypoints=ollama.get("way_points", {}),
             distance_km=route_engine.get("distance", 0),
             route_type=ollama.get("route_type", None),
+            title=ollama.get("title") or "Title of route",
+            prompt=prompt.get("additional_message"),
+            route_code=code,
         )
     except Exception as exc:
         raise RouteGeneratedNoValidError from exc
+
+
+def generate_unique_code() -> str:
+    last_route: RouteGeneratedByUser | None = (
+        RouteGeneratedByUser.objects
+        .exclude(route_code__isnull=True)
+        .exclude(route_code="")
+        .order_by("-id")
+        .first()
+    )
+    if not last_route:
+        return "RI/0"
+
+    last_code = last_route.route_code.split("/")[-1]
+    try:
+        number = int(last_code)
+    except TypeError, ValueError:
+        number = -1
+    return f"RI/{number + 1}"
