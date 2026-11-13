@@ -48,6 +48,8 @@ def assign_route_to_user(user: User, route_generated: dict):
             title=ollama.get("title") or "Title of route",
             prompt=prompt.get("additional_message"),
             route_code=code,
+            way_points_coords=ollama.get("way_points_coords", {}),
+            duration=route_engine.get("duration", 0),
         )
     except Exception as exc:
         raise RouteGeneratedNoValidError from exc
