@@ -37,6 +37,8 @@ class RouteGeneratedByUser(models.Model):
     title = models.CharField(max_length=255, db_comment="Title of route", default="Title of route")
     prompt = models.TextField(db_comment="Prompt of route", default="Prompt of route")
     route_code = models.CharField(max_length=10, db_comment="Code of route", unique=True)
+    duration = models.FloatField(null=False, blank=False, db_comment="Duration of route")
+    way_points_coords = models.JSONField(null=False, blank=False, db_comment="Waypoints of route")
 
     class Meta:
         db_table = "route_generated_user"
