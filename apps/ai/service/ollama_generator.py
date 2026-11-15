@@ -182,17 +182,9 @@ def create_user_prompt(prompt: dict) -> str:
     origin_val = prompt.get("origin") or "No especificado"
     destination_val = prompt.get("destination") or "No especificado"
     route_type_val = prompt.get("route_type") or "No especificado"
-    add_msg_val = (
-        prompt.get("additional_data")
-        or prompt.get("additional_message")
-        or "Sin preferencias adicionales"
-    )
+    add_msg_val = prompt.get("additional_data") or "Sin preferencias adicionales"
     prefer_curvy_roads = "Sí" if prompt.get("prefer_curvy_roads") else "No"
     avoid_motorways = "Sí" if prompt.get("avoid_motorways") else "No"
-    duration = (
-        "Sin límite" if not prompt.get("duration_time") else f"{prompt['duration_time']} minutos"
-    )
-    distance = "Sin límite" if not prompt.get("distance_km") else f"{prompt['distance_km']} km"
 
     return USER_PROMPT.format(
         origin=origin_val,
@@ -200,8 +192,6 @@ def create_user_prompt(prompt: dict) -> str:
         route_type=route_type_val,
         prefer_curvy_roads=prefer_curvy_roads,
         avoid_motorways=avoid_motorways,
-        duration_time=duration,
-        distance=distance,
         additional_message=add_msg_val,
     )
 

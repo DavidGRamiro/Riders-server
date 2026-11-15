@@ -71,8 +71,6 @@ DATOS DE LA RUTA:
 - Tipo de ruta: {route_type}
 - Carreteras reviradas/curvas: {prefer_curvy_roads}
 - Evitar autovías: {avoid_motorways}
-- Duración máxima: {duration_time}
-- Distancia máxima: {distance}
 
 Genera solo los puntos obligatorios: el origen, los lugares mencionados en las preferencias y el destino, en orden. No añadas waypoints intermedios; el sistema los calculará después siguiendo la carretera. Devuelve únicamente el JSON con el esquema indicado.
 """
