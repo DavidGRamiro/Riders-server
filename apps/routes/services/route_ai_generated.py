@@ -12,6 +12,7 @@ Este módulo se encarga de mapear esos datos al modelo ``RouteGeneratedByUser``.
 
 from apps.routes.exceptions import RouteGeneratedNoValidError
 from apps.routes.models import RouteGeneratedByUser
+from apps.routes.serializer import UserRouteGeneratedSerializer
 from apps.users.models import User
 
 
@@ -39,7 +40,7 @@ def assign_route_to_user(user: User, route_generated: dict):
         prompt = route_generated["prompt"]
         code = generate_unique_code()
 
-        RouteGeneratedByUser.objects.create(
+        route = RouteGeneratedByUser.objects.create(
             id_fk_user=user,
             coords=route_engine.get("coordinates", {}),
             waypoints=ollama.get("way_points", {}),
@@ -51,6 +52,8 @@ def assign_route_to_user(user: User, route_generated: dict):
             way_points_coords=ollama.get("way_points_coords", {}),
             duration=route_engine.get("duration", 0),
         )
+        serialize_obj = UserRouteGeneratedSerializer(route)
+        return serialize_obj.data
     except Exception as exc:
         raise RouteGeneratedNoValidError from exc
 
