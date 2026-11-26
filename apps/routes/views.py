@@ -17,11 +17,15 @@ class RouteViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
+class RouteGeneratedByUserPagination(PageNumberPagination):
+    page_size = 20
+
+
 class RouteGeneratedByUserViewSet(ModelViewSet):
     queryset = RouteGeneratedByUser.objects.none()
     serializer_class = UserRouteGeneratedSerializer
     permission_classes = [IsAuthenticated]
-    pagination_class = PageNumberPagination
+    pagination_class = RouteGeneratedByUserPagination
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ["title", "prompt"]
     ordering_fields = ["id"]
@@ -35,3 +39,14 @@ class RouteGeneratedByUserViewSet(ModelViewSet):
         route = self.get_object()
         route.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def partial_update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        route = self.get_object()
+        route.saved = request.data["saved"] or False
+        route.save()
+
+        serializer = self.serializer_class(route)
+        return Response(
+            status=status.HTTP_200_OK,
+            data={"message": "Ruta guardada correctamente", "route": serializer.data},
+        )

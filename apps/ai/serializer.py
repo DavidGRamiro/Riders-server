@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.routes.enums.route_type import RouteTypes
+from apps.routes.serializer import UserRouteGeneratedSerializer
 
 
 class OllamaApiSerializer(serializers.Serializer):
@@ -40,3 +41,4 @@ class ValhallaSerializer(serializers.Serializer):
 class ResponseSerializer(serializers.Serializer):
     ollama = OllamaApiSerializer()
     route_engine = ValhallaSerializer()
+    route = UserRouteGeneratedSerializer()

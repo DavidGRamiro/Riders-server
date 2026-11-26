@@ -27,7 +27,7 @@ def assign_route_to_user(user: User, route_generated: dict):
             ``route_engine`` devueltas por el flujo de generación de rutas.
 
     Returns:
-        None.
+        La instancia de ``RouteGeneratedByUser`` creada.
 
     Raises:
         RouteGeneratedNoValidError: Si los datos de la ruta son inválidos o
@@ -39,7 +39,7 @@ def assign_route_to_user(user: User, route_generated: dict):
         prompt = route_generated["prompt"]
         code = generate_unique_code()
 
-        RouteGeneratedByUser.objects.create(
+        route = RouteGeneratedByUser.objects.create(
             id_fk_user=user,
             coords=route_engine.get("coordinates", {}),
             waypoints=ollama.get("way_points", {}),
@@ -51,6 +51,7 @@ def assign_route_to_user(user: User, route_generated: dict):
             way_points_coords=ollama.get("way_points_coords", {}),
             duration=route_engine.get("duration", 0),
         )
+        return route
     except Exception as exc:
         raise RouteGeneratedNoValidError from exc
 

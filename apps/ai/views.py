@@ -23,8 +23,7 @@ class OllamaAIViewSet(ViewSet):
         request_serializer.is_valid(raise_exception=True)
         try:
             response = engine_route_generator(request_serializer.validated_data, request.user)
-            serializer = ResponseSerializer(data=response)
-            serializer.is_valid(raise_exception=True)
+            serializer = ResponseSerializer(response)
         except ValidationErr as ex:
             raise OllamaServiceException() from ex
         return Response(data=serializer.data, status=status.HTTP_200_OK)
