@@ -18,6 +18,7 @@ class Bike(models.Model):
         choices=BikeTypeChoice, null=False, blank=False, db_comment="Tipo de moto"
     )
     engine_cc = models.CharField(max_length=6, null=False, blank=False, db_comment="Cilindrada")
+    engine_power = models.CharField(db_comment="CV of engine power")
     year = models.IntegerField(null=False, blank=False, db_comment="Año de moto")
     kilometers = models.IntegerField(null=False, blank=False, db_comment="Kilometrage")
     color = models.CharField(max_length=20, db_comment="Color")
